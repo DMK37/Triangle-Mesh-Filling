@@ -5,6 +5,7 @@ import java.util.List;
 public class Mesh {
 
     List<Triangle> triangleFaces;
+    static int  numberInRow = 28;
 
     double[][] z;
 
@@ -19,7 +20,7 @@ public class Mesh {
         }
 
         triangleFaces = new ArrayList<>();
-        triangulate(6);
+        triangulate(numberInRow);
     }
     
     public void drawMesh(Graphics2D g) {

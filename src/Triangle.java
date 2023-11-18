@@ -1,7 +1,3 @@
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Triangle {
     Point3D[] points;
@@ -18,14 +14,6 @@ public class Triangle {
         normalVector1 = vector1;
         normalVector2 = vector2;
         normalVector3 = vector3;
-    }
-
-    public void fillTriangle(Graphics2D g) {
-        List<Point> p = new ArrayList<>();
-        p.add(new Point((int) (points[0].x * DrawPanel.WIDTH) + 2 * DrawPanel.MARGIN, (int) (points[0].y * DrawPanel.WIDTH) + 2 * DrawPanel.MARGIN));
-        p.add(new Point((int) (points[1].x * DrawPanel.WIDTH) + 2 * DrawPanel.MARGIN, (int) (points[1].y * DrawPanel.WIDTH) + 2 * DrawPanel.MARGIN));
-        p.add(new Point((int) (points[2].x * DrawPanel.WIDTH) + 2 * DrawPanel.MARGIN, (int) (points[2].y * DrawPanel.WIDTH) + 2 * DrawPanel.MARGIN));
-        ScanLineAlgorithm.fillPolygon(p, g);
     }
 
     public double[] pickColor(double[] lightColor, double[] objectColor, double[] normalVector, double[] lightVersor) {

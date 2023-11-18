@@ -1,9 +1,13 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class OptionsPanel extends JPanel implements ActionListener, ChangeListener {
 
@@ -15,9 +19,13 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
 
     public  JButton objectColorButton = new JButton("Pick object color");
 
+    public  JButton imageButton = new JButton("Pick image");
+
+    public static JCheckBox normalMapBox = new JCheckBox("NormalMap");
+
     public OptionsPanel() {
 
-        this.setLayout(new GridLayout(2,3));
+        this.setLayout(new GridLayout(3,3));
         KdSlider.setMajorTickSpacing(20);
         KdSlider.setPaintTicks(true);
         KdSlider.setPaintLabels(true);
@@ -35,6 +43,8 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
 
         lightColorButton.addActionListener(this);
         objectColorButton.addActionListener(this);
+        imageButton.addActionListener(this);
+        normalMapBox.addActionListener(this);
 
         var panel1 = new JPanel();
         panel1.add(new JLabel("Kd"));
@@ -50,6 +60,8 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
         this.add(panel3);
         this.add(lightColorButton);
         this.add(objectColorButton);
+        this.add(imageButton);
+        this.add(normalMapBox);
     }
 
     @Override
@@ -57,6 +69,8 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
         if(e.getSource() == lightColorButton) {
             JColorChooser colorChooser = new JColorChooser();
             Color color = JColorChooser.showDialog(null, "Pick a Color", Color.white);
+            if(color == null)
+                return;
             int r = color.getRed();
             int g = color.getGreen();
             int b = color.getBlue();
@@ -67,11 +81,32 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
         if(e.getSource() == objectColorButton) {
             JColorChooser colorChooser = new JColorChooser();
             Color color = JColorChooser.showDialog(null, "Pick a Color", Color.white);
+            if(color == null)
+                return;
             int r = color.getRed();
             int g = color.getGreen();
             int b = color.getBlue();
             DrawPanel.objectColor = new double[]{(double) r / 255, (double) g / 255, (double) b / 255};
+            DrawPanel.image = null;
            MainPanel.drawPanel.repaint();
+        }
+        if(e.getSource() == imageButton) {
+            String userhome = System.getProperty("user.dir");
+            JFileChooser fileChooser = new JFileChooser(userhome);
+            int response = fileChooser.showOpenDialog(null);
+            if(response == JFileChooser.APPROVE_OPTION) {
+                File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+                try {
+                    BufferedImage img = ImageIO.read(file);
+                    DrawPanel.image = resize(img, DrawPanel.HEIGHT, DrawPanel.WIDTH);
+                } catch (IOException ex) {
+                    System.out.println("exception");
+                }
+                MainPanel.drawPanel.repaint();
+            }
+        }
+        if(e.getSource() == normalMapBox) {
+            MainPanel.drawPanel.repaint();
         }
     }
 
@@ -79,5 +114,16 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
     @Override
     public void stateChanged(ChangeEvent e) {
         MainPanel.drawPanel.repaint();
+    }
+
+    public static BufferedImage resize(BufferedImage img, int newW, int newH) {
+        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = dimg.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return dimg;
     }
 }

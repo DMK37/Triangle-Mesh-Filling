@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -144,7 +143,24 @@ public class ScanLineAlgorithm {
                     double trY = (double) (y - DrawPanel.MARGIN) / DrawPanel.WIDTH;
                     var nVector = Calculation.normalVector(mesh.z, trX, trY);
                     double trZ = Calculation.calculateZ(mesh.z, trX, trY);
-                    double[] c = triangle.pickColor(DrawPanel.lightColor, DrawPanel.objectColor, nVector, Calculation.calculateVectorFromPoints(new double[]{trX, trY, trZ}, DrawPanel.ligthPosition));
+                    double[] c;
+                    if(DrawPanel.image == null)
+                    {
+                        c = triangle.pickColor(DrawPanel.lightColor, DrawPanel.objectColor, nVector, Calculation.calculateVectorFromPoints(new double[]{trX, trY, trZ}, DrawPanel.ligthPosition));
+                    }
+                    else {
+                        int col = DrawPanel.image.getRGB(x - 2*DrawPanel.MARGIN, y - 2*DrawPanel.MARGIN);
+                        int  red = (col & 0x00ff0000) >> 16;
+                        int  green = (col & 0x0000ff00) >> 8;
+                        int  blue = col & 0x000000ff;
+                        if(OptionsPanel.normalMapBox.isSelected()) {
+                            double[][] mat = Calculation.calculateM(nVector);
+                            // rescale rgb
+                            nVector = Calculation.matrixByVector(mat, new double[] {(double) red / 255 * 2 - 1, (double) green / 255 * 2 - 1, (double) blue / 255});
+                        }
+                        double[] objColor = new double[] {(double) red / 255, (double) green / 255, (double) blue / 255};
+                        c = triangle.pickColor(DrawPanel.lightColor, objColor, nVector, Calculation.calculateVectorFromPoints(new double[]{trX, trY, trZ}, DrawPanel.ligthPosition));
+                    }
                     g.setColor(new Color((int) (c[0] * 255), (int) (c[1] * 255), (int) (c[2] * 255)));
                     g.drawOval(x, y, 1, 1);
                 }

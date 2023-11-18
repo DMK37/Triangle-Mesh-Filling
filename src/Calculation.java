@@ -57,18 +57,16 @@ public class Calculation {
         return new double[]{0, 1, n * sum};
     }
 
+    private static double[] vectorProduct(double[] v1, double[] v2) {
+        return new double[]{v1[1] * v2[2] - v1[2] * v2[1], v1[2] * v2[0] - v1[0] * v2[2], v1[0] * v2[1] - v1[1] * v2[0]};
+    }
+
     public static double[] normalVector(double[][] z, double u, double v) {
         double[] Pu = calculateDerivativeU(z, u, v);
         double[] Pv = calculateDerivativeV(z, u, v);
 
-        double[] vector = new double[]{Pu[1] * Pv[2] - Pu[2] * Pv[1], Pu[2] * Pv[0] - Pu[0] * Pv[2], Pu[0] * Pv[1] - Pu[1] * Pv[0]};
-        double l = lengthOfVector(vector);
-        if(l != 0) {
-            vector[0] /= l;
-            vector[1] /= l;
-            vector[2] /= l;
-        }
-        return vector;
+        double[] vector = vectorProduct(Pu, Pv);
+        return normalizeVector(vector);
     }
 
 
@@ -102,13 +100,7 @@ public class Calculation {
         double r2 = w1 * v1[1] + w2 * v2[1] + w3 * v3[1];
         double r3 = w1 * v1[2] + w2 * v2[2] + w3 * v3[2];
         double[] vector = new double[]{r1, r2, r3};
-        double l = lengthOfVector(vector);
-        if(l != 0) {
-            vector[0] /= l;
-            vector[1] /= l;
-            vector[2] /= l;
-        }
-        return vector;
+        return normalizeVector(vector);
     }
 
     public static double cos(double[] a, double[] b) {
@@ -129,17 +121,15 @@ public class Calculation {
         for (int i = 0; i < res.length; i++) {
             res[i] = 2 * crossProduct(n, l) * n[i] - l[i];
         }
-        double len = lengthOfVector(res);
-        if(len != 0) {
-            res[0] /= len;
-            res[1] /= len;
-            res[2] /= len;
-        }
-        return res;
+        return normalizeVector(res);
     }
 
     public static double[] calculateVectorFromPoints(double[] a, double[] b) {
         double[] vector = new double[]{b[0] - a[0], b[1] - a[1], b[2] - a[2]};
+        return normalizeVector(vector);
+    }
+
+    public static double[] normalizeVector(double[] vector) {
         double l = lengthOfVector(vector);
         if(l != 0) {
             vector[0] /= l;
@@ -147,6 +137,23 @@ public class Calculation {
             vector[2] /= l;
         }
         return vector;
+    }
+
+    public static double[][] calculateM(double[] n) {
+        double[] B = vectorProduct(n, new double[]{0, 0, 1});
+        if(n[0] == 0 && n[1] == 0 && n[2] == 1)
+            B = new double[] {0,1,0};
+        B = normalizeVector(B);
+        double[] T = vectorProduct(B, n);
+        T = normalizeVector(T);
+        return new double[][] { T, B, n};
+    }
+
+    public static double[] matrixByVector(double[][] M, double[] v) {
+        double x = M[0][0] * v[0] + M[0][1] * v[1] + M[0][2] * v[2];
+        double y = M[1][0] * v[0] + M[1][1] * v[1] + M[1][2] * v[2];
+        double z = M[2][0] * v[0] + M[2][1] * v[1] + M[2][2] * v[2];
+        return new double[]{x, y, z};
     }
 
 
