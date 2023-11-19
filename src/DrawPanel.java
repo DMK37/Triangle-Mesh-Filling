@@ -1,31 +1,42 @@
 import javax.swing.*;
 import java.awt.*;
 
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 
-public class DrawPanel extends JPanel implements MouseWheelListener {
-    public DrawPanel() {
-        this.setBackground(Color.LIGHT_GRAY);
-        this.addMouseWheelListener(this);
-    }
+public class DrawPanel extends JPanel implements MouseWheelListener, ActionListener {
+
 
     public static final int MARGIN = 4;
     public static final int WIDTH = 600;
     public static final int HEIGHT = 600;
 
-    public static double[] lightColor = new double[]{1, 1, 1};
+    public static float[] lightColor = new float[]{1, 1, 1};
 
-    public static double[] objectColor = new double[]{0.5, 0.5, 0.5};
+    public static float[] objectColor = new float[]{0.5f, 0.5f, 0.5f};
 
 
-    public static double[] ligthPosition = new double[]{0.5, 0.5, 5};
+    public static float[] ligthPosition = new float[]{0.5f, 0.5f, 0.5f};
+
+    public float originX = 0.5f;
+    public float originY = 0.5f;
+
+    public float angle = 0;
 
     public Mesh mesh = new Mesh();
 
     public static BufferedImage image;
+
+    public static Timer timer;
+    public DrawPanel() {
+        this.setBackground(Color.LIGHT_GRAY);
+        this.setFocusable(true);
+        this.addMouseWheelListener(this);
+        timer = new Timer(1000, this);
+        timer.start();
+        
+    }
 
     @Override
     public void paint(Graphics graphics) {
@@ -54,7 +65,15 @@ public class DrawPanel extends JPanel implements MouseWheelListener {
         MainPanel.drawPanel.repaint();
     }
 
-    public double dist(int x1, int y1, int x2, int y2) {
-        return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    public float dist(int x1, int y1, int x2, int y2) {
+        return (float) Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        ligthPosition[0] = (float) (originX + Math.cos(angle) * 0.3);
+        ligthPosition[1] = (float) (originY + Math.sin(angle) * 0.3);
+        angle += 0.5f;
+        repaint();
     }
 }

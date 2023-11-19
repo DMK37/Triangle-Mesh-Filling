@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class MainFrame extends JFrame {
     private final MainPanel mainPanel;
@@ -12,4 +14,5 @@ public class MainFrame extends JFrame {
         this.add(mainPanel);
         this.setVisible(true);
     }
+
 }

@@ -1,9 +1,9 @@
 public class Point3D {
-    public double x;
-    public double y;
-    public double z;
+    public float x;
+    public float y;
+    public float z;
 
-    public Point3D(double x, double y, double z) {
+    public Point3D(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;

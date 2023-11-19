@@ -23,7 +23,7 @@ public class ScanLineAlgorithm {
     private static class AET {
         public Point A;
         public Point B;
-        public double X;
+        public float X;
 
         public AET(Point a, Point b, int y) {
             this.A = a;
@@ -32,7 +32,7 @@ public class ScanLineAlgorithm {
         }
 
         public void SetX(int y) {
-            double tmp = ((double) (A.y - B.y) / (double) (A.x - B.x));
+            float tmp = ((float) (A.y - B.y) / (float) (A.x - B.x));
             X = Math.abs(A.x - B.x) < 1 ? A.x : (y - (A.y - tmp * A.x)) / tmp;
         }
     }
@@ -89,8 +89,8 @@ public class ScanLineAlgorithm {
 
     public static void fillTriangle(Triangle triangle, Graphics2D g, Mesh mesh) {
         List<Point> points = new ArrayList<>();
-        double j = triangle.points[0].x * DrawPanel.HEIGHT + 2 * DrawPanel.MARGIN;
-        double k = triangle.points[0].y * DrawPanel.HEIGHT + 2 * DrawPanel.MARGIN;
+        float j = triangle.points[0].x * DrawPanel.HEIGHT + 2 * DrawPanel.MARGIN;
+        float k = triangle.points[0].y * DrawPanel.HEIGHT + 2 * DrawPanel.MARGIN;
         points.add(new Point((int) j, (int) k));
         j = triangle.points[1].x * DrawPanel.HEIGHT + 2 * DrawPanel.MARGIN;
         k = triangle.points[1].y * DrawPanel.HEIGHT + 2 * DrawPanel.MARGIN;
@@ -139,14 +139,14 @@ public class ScanLineAlgorithm {
                 int xMin = (int) aets.get(i).X;
                 int xMax = (int) aets.get(i + 1).X;
                 for (int x = xMin; x < xMax; x++) {
-                    double trX = (double) (x - DrawPanel.MARGIN) / DrawPanel.WIDTH;
-                    double trY = (double) (y - DrawPanel.MARGIN) / DrawPanel.WIDTH;
-                    var nVector = Calculation.normalVector(mesh.z, trX, trY);
-                    double trZ = Calculation.calculateZ(mesh.z, trX, trY);
-                    double[] c;
+                    float trX =  (float) (x - DrawPanel.MARGIN) / DrawPanel.WIDTH;
+                    float trY =  (float) (y - DrawPanel.MARGIN) / DrawPanel.WIDTH;
+                    float[] nVector = Calculation.normalVector(mesh.z, trX, trY);
+                    float trZ = Calculation.calculateZ(mesh.z, trX, trY);
+                    float[] c;
                     if(DrawPanel.image == null)
                     {
-                        c = triangle.pickColor(DrawPanel.lightColor, DrawPanel.objectColor, nVector, Calculation.calculateVectorFromPoints(new double[]{trX, trY, trZ}, DrawPanel.ligthPosition));
+                        c = triangle.pickColor(DrawPanel.lightColor, DrawPanel.objectColor, nVector, Calculation.calculateVectorFromPoints(new float[]{trX, trY, trZ}, DrawPanel.ligthPosition));
                     }
                     else {
                         int col = DrawPanel.image.getRGB(x - 2*DrawPanel.MARGIN, y - 2*DrawPanel.MARGIN);
@@ -154,12 +154,12 @@ public class ScanLineAlgorithm {
                         int  green = (col & 0x0000ff00) >> 8;
                         int  blue = col & 0x000000ff;
                         if(OptionsPanel.normalMapBox.isSelected()) {
-                            double[][] mat = Calculation.calculateM(nVector);
+                            float[][] mat = Calculation.calculateM(nVector);
                             // rescale rgb
-                            nVector = Calculation.matrixByVector(mat, new double[] {(double) red / 255 * 2 - 1, (double) green / 255 * 2 - 1, (double) blue / 255});
+                            nVector = Calculation.matrixByVector(mat, new float[] {(float) red / 255 * 2 - 1, (float) green / 255 * 2 - 1, (float) blue / 255});
                         }
-                        double[] objColor = new double[] {(double) red / 255, (double) green / 255, (double) blue / 255};
-                        c = triangle.pickColor(DrawPanel.lightColor, objColor, nVector, Calculation.calculateVectorFromPoints(new double[]{trX, trY, trZ}, DrawPanel.ligthPosition));
+                        float[] objColor = new float[] {(float) red / 255, (float) green / 255, (float) blue / 255};
+                        c = triangle.pickColor(DrawPanel.lightColor, objColor, nVector, Calculation.calculateVectorFromPoints(new float[]{trX, trY, trZ}, DrawPanel.ligthPosition));
                     }
                     g.setColor(new Color((int) (c[0] * 255), (int) (c[1] * 255), (int) (c[2] * 255)));
                     g.drawOval(x, y, 1, 1);

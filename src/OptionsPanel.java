@@ -21,6 +21,8 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
 
     public  JButton imageButton = new JButton("Pick image");
 
+    public  JButton pauseButton = new JButton("Start/Pause");
+
     public static JCheckBox normalMapBox = new JCheckBox("NormalMap");
 
     public OptionsPanel() {
@@ -45,6 +47,7 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
         objectColorButton.addActionListener(this);
         imageButton.addActionListener(this);
         normalMapBox.addActionListener(this);
+        pauseButton.addActionListener(this);
 
         var panel1 = new JPanel();
         panel1.add(new JLabel("Kd"));
@@ -62,6 +65,7 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
         this.add(objectColorButton);
         this.add(imageButton);
         this.add(normalMapBox);
+        this.add(pauseButton);
     }
 
     @Override
@@ -74,7 +78,7 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
             int r = color.getRed();
             int g = color.getGreen();
             int b = color.getBlue();
-            DrawPanel.lightColor = new double[]{(double) r / 255, (double) g / 255, (double) b / 255};
+            DrawPanel.lightColor = new float[]{ (float) r / 255, (float) g / 255, (float) b / 255};
             MainPanel.drawPanel.repaint();
         }
 
@@ -86,7 +90,7 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
             int r = color.getRed();
             int g = color.getGreen();
             int b = color.getBlue();
-            DrawPanel.objectColor = new double[]{(double) r / 255, (double) g / 255, (double) b / 255};
+            DrawPanel.objectColor = new float[]{(float) r / 255, (float) g / 255, (float) b / 255};
             DrawPanel.image = null;
            MainPanel.drawPanel.repaint();
         }
@@ -107,6 +111,13 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
         }
         if(e.getSource() == normalMapBox) {
             MainPanel.drawPanel.repaint();
+        }
+        if(e.getSource() == pauseButton) {
+            if (DrawPanel.timer.isRunning())
+                DrawPanel.timer.stop();
+            else {
+                DrawPanel.timer.start();
+            }
         }
     }
 
