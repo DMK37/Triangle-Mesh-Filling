@@ -7,7 +7,7 @@ public class MainFrame extends JFrame {
 
 
     public MainFrame() {
-        this.setSize(1300,750);
+        this.setSize(1000,650);
         this.setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainPanel = new MainPanel();

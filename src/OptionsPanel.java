@@ -15,6 +15,8 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
     public static JSlider KsSlider = new JSlider(0, 100);
     public static JSlider mSlider = new JSlider(0, 100);
 
+    public static JSlider triangleSlider = new JSlider(1, 20);
+
     public  JButton lightColorButton = new JButton("Pick light color");
 
     public  JButton objectColorButton = new JButton("Pick object color");
@@ -25,9 +27,14 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
 
     public static JCheckBox normalMapBox = new JCheckBox("NormalMap");
 
+    public static JCheckBox gridBox = new JCheckBox("Show Grid");
+
+    public static JSlider heightSlider = new JSlider(1, 10);
+
     public OptionsPanel() {
 
-        this.setLayout(new GridLayout(3,3));
+        this.setLayout(new GridLayout(5,2));
+        this.setPreferredSize(new Dimension(450, 400));
         KdSlider.setMajorTickSpacing(20);
         KdSlider.setPaintTicks(true);
         KdSlider.setPaintLabels(true);
@@ -43,29 +50,53 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
         mSlider.setPaintLabels(true);
         mSlider.addChangeListener(this);
 
+        heightSlider.setMajorTickSpacing(2);
+        heightSlider.setPaintTicks(true);
+        heightSlider.setPaintLabels(true);
+        heightSlider.addChangeListener(this);
+
+        triangleSlider.setMajorTickSpacing(2);
+        triangleSlider.setPaintTicks(true);
+        triangleSlider.setPaintLabels(true);
+        triangleSlider.addChangeListener(this);
+
         lightColorButton.addActionListener(this);
         objectColorButton.addActionListener(this);
         imageButton.addActionListener(this);
         normalMapBox.addActionListener(this);
         pauseButton.addActionListener(this);
+        gridBox.addActionListener(this);
 
         var panel1 = new JPanel();
-        panel1.add(new JLabel("Kd"));
+        panel1.add(new JLabel("Kd, %"));
         panel1.add(KdSlider);
         this.add(panel1);
         var panel2 = new JPanel();
-        panel2.add(new JLabel("Ks"));
+        panel2.add(new JLabel("Ks, %"));
         panel2.add(KsSlider);
         this.add(panel2);
         var panel3 = new JPanel();
         panel3.add(new JLabel("m"));
         panel3.add(mSlider);
         this.add(panel3);
+        var panel4 = new JPanel();
+        panel4.add(new JLabel("Triangles"));
+        panel4.add(triangleSlider);
+        //this.add(panel4);
+
+        var panel5 = new JPanel();
+        panel5.add(new JLabel("Height"));
+        panel5.add(heightSlider);
+        this.add(panel5);
+
         this.add(lightColorButton);
         this.add(objectColorButton);
         this.add(imageButton);
         this.add(normalMapBox);
         this.add(pauseButton);
+        this.add(gridBox);
+        triangleSlider.setValue(8);
+
     }
 
     @Override
@@ -112,6 +143,9 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
         if(e.getSource() == normalMapBox) {
             MainPanel.drawPanel.repaint();
         }
+        if(e.getSource() == gridBox) {
+            MainPanel.drawPanel.repaint();
+        }
         if(e.getSource() == pauseButton) {
             if (DrawPanel.timer.isRunning())
                 DrawPanel.timer.stop();
@@ -124,6 +158,10 @@ public class OptionsPanel extends JPanel implements ActionListener, ChangeListen
 
     @Override
     public void stateChanged(ChangeEvent e) {
+
+        if(e.getSource() == heightSlider) {
+            DrawPanel.ligthPosition[2] = (float) heightSlider.getValue() / 5;
+        }
         MainPanel.drawPanel.repaint();
     }
 

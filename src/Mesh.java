@@ -1,12 +1,12 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
 
 public class Mesh {
 
     List<Triangle> triangleFaces;
-    static int  numberInRow = 28;
+    public static int  numberInRow = 12;
 
     float[][] z;
 
@@ -16,22 +16,32 @@ public class Mesh {
             for(int j = 0; j < 4; j++)
             {
                 if((i == 0 && j == 0) ||(i == 3 && j == 0) || (i == 0 && j == 3) || (i == 3 && j == 3)) continue;
-                z[i][j] = (float) (Math.random() % 5);
+                //z[i][j] = (float) (Math.random() % 5);
             }
         }
         triangleFaces = new ArrayList<>();
         triangulate(numberInRow);
     }
     
-    public void drawMesh(Graphics2D g) {
-        for (Triangle triangle:
-             triangleFaces) {
+    public void drawMesh(Graphics2D g) throws ExecutionException, InterruptedException {
+        //ExecutorService executor = Executors.newFixedThreadPool(10);
+        for (Triangle triangle :
+                triangleFaces) {
+
+//            CompletableFuture<List<ColoredPoint>> future = CompletableFuture.supplyAsync(() ->
+//            {
+//                return ScanLineAlgorithm.fillTriangleAsync(triangle, this);}
+//            ,executor);
+//            triangle.coloredPoints = future.get();
             ScanLineAlgorithm.fillTriangle(triangle, g, this);
         }
+//        for (Triangle triangle :
+//                triangleFaces) {
+//            triangle.fill(g);
+//        }
+//        executor.shutdown();
     }
-public void asd() {
 
-}
     public void triangulate(int numberInRow) {
         float width =  (float) 1 / numberInRow;
         int margin = DrawPanel.MARGIN;

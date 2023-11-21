@@ -1,3 +1,5 @@
+import java.awt.*;
+import java.util.List;
 
 public class Triangle {
     Point3D[] points;
@@ -5,6 +7,8 @@ public class Triangle {
     float[] normalVector1;
     float[] normalVector2;
     float[] normalVector3;
+
+    public List<ColoredPoint> coloredPoints;
 
     public Triangle(Point3D a, Point3D b, Point3D c, float[] vector1, float[] vector2, float[] vector3) {
         points = new Point3D[3];
@@ -28,6 +32,14 @@ public class Triangle {
         if (g > 1) g = 1;
         if (b > 1) b = 1;
         return new float[]{r, g, b};
+    }
+
+    public void fill(Graphics2D g) {
+        for (var tuple:
+             coloredPoints) {
+            g.setColor(tuple.color);
+            g.drawLine(tuple.X, tuple.Y, tuple.X, tuple.Y);
+        }
     }
 
 
